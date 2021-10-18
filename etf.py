@@ -34,6 +34,7 @@ def adjust_lightness(color, amount=0.5):
 
 ticker = 'IWDA.AS'
 #ticker = 'CNY.PA'
+#ticker = 'BNK.PA'
 
 df_etf = get_data(ticker)
 df_etf_monthly = df_etf.assign(Date=df_etf.index).resample('M',on='Date').mean()
@@ -101,7 +102,7 @@ x_neg = np.arange(1, max(grm_neg.keys())+1, 1)
 y_neg = np.arange(1, max(grm_neg.values())+1,1)
 axs2.set_xticks(x_neg)
 axs2.set_yticks(y_neg)
-plt.savefig('Monthly growth histogram '+ticker+'.png')
+plt.savefig('Countinuous monthly growth histogram '+ticker+'.png')
 
 #----------------------------------------------------------------
 # calculate margin of continuous increase/decrease
@@ -186,171 +187,99 @@ i = 0
 for i in range(0, len(p3)):
     margin = (adjclose_m[p4[i]] - adjclose_m[p3[i]])/adjclose_m[p3[i]]
     gr_margin_neg.append(margin)
-print(gr_margin_neg)
+#print(gr_margin_neg)
 
 # count growth rate positive in ranges
-i1 = 0 # between 0-0.05
-i2 = 0 # between 0.05-0.1
-i3 = 0 # between 0.1-0.15
-i4 = 0 # between 0.15-0.2
-i5 = 0 # between 0.2-0.25
-i6 = 0 # between 0.25-0.3
-i7 = 0 # between 0.3-0.35
-i8 = 0 # between 0.35-0.4
-i9 = 0 # between 0.4-0.45
-i10 = 0 # between 0.45-0.5
-i11 = 0 # between 0.5-0.55
-i12 = 0 # between 0.55-0.6
-i13 = 0 # between 0.6-0.65
-i14 = 0 # between 0.65-0.7
-i15 = 0 # between 0.7-0.75
-i16 = 0 # between 0.75-0.8
-i17 = 0 # between 0.8-0.85
-i18 = 0 # between 0.85-0.9
-i19 = 0 # between 0.9-0.95
-i20 = 0 # between 0.95-1
-
-for i in range(0,len(gr_margin_pos)-1):
-    if gr_margin_pos[i]<=0.05:
-        i1+=1
-    elif 0.05<gr_margin_pos[i]<=0.1:
-        i2+=1
-    elif 0.1<gr_margin_pos[i]<=0.15:
-        i3+=1
-    elif 0.15<gr_margin_pos[i]<=0.2:
-        i4+=1
-    elif 0.2<gr_margin_pos[i]<=0.25:
-        i5+=1
-    elif 0.25<gr_margin_pos[i]<=0.3:
-        i6+=1
-    elif 0.3<gr_margin_pos[i]<=0.35:
-        i7+=1
-    elif 0.35<gr_margin_pos[i]<=0.4:
-        i8+=1
-    elif 0.4<gr_margin_pos[i]<=0.45:
-        i9+=1
-    elif 0.45<gr_margin_pos[i]<=0.5:
-        i10+=1
-    elif 0.5<gr_margin_pos[i]<=0.55:
-        i11+=1
-    elif 0.55<gr_margin_pos[i]<=0.6:
-        i12+=1
-    elif 0.6<gr_margin_pos[i]<=0.65:
-        i13+=1
-    elif 0.65<gr_margin_pos[i]<=0.7:
-        i14+=1
-    elif 0.7<gr_margin_pos[i]<=0.75:
-        i15+=1
-    elif 0.75<gr_margin_pos[i]<=0.8:
-        i16+=1
-    elif 0.8<gr_margin_pos[i]<=0.85:
-        i17+=1
-    elif 0.85<gr_margin_pos[i]<=0.9:
-        i18+=1
-    elif 0.9<gr_margin_pos[i]<=0.95:
-        i19+=1
-    else:
-        i20+=1
-    i+=1
-count_gr_margin_pos = [i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14,i15,i16,i17,i18,i19,i20]
-print(count_gr_margin_pos)
+count_mg_pos = {}
+count = 0
+interval = 1
+for interval in range(0,100):
+    for j in range(0,len(gr_margin_pos)):
+        if interval*0.01<gr_margin_pos[j]<(interval+1)*0.01:
+            count+=1
+    count_mg_pos[interval] = count
+    count = 0
+print(count_mg_pos)
 
 # count growth rate negative between ranges
-i1 = 0 # between 0-0.05
-i2 = 0 # between 0.05-0.1
-i3 = 0 # between 0.1-0.15
-i4 = 0 # between 0.15-0.2
-i5 = 0 # between 0.2-0.25
-i6 = 0 # between 0.25-0.3
-i7 = 0 # between 0.3-0.35
-i8 = 0 # between 0.35-0.4
-i9 = 0 # between 0.4-0.45
-i10 = 0 # between 0.45-0.5
-i11 = 0 # between 0.5-0.55
-i12 = 0 # between 0.55-0.6
-i13 = 0 # between 0.6-0.65
-i14 = 0 # between 0.65-0.7
-i15 = 0 # between 0.7-0.75
-i16 = 0 # between 0.75-0.8
-i17 = 0 # between 0.8-0.85
-i18 = 0 # between 0.85-0.9
-i19 = 0 # between 0.9-0.95
-i20 = 0 # between 0.95-1
-
-for i in range(0,len(gr_margin_neg)-1):
-    if gr_margin_neg[i]>-0.05:
-        i1+=1
-    elif -0.1<gr_margin_neg[i]<=0.05:
-        i2+=1
-    elif -0.15<gr_margin_neg[i]<=0.1:
-        i3+=1
-    elif -0.2<gr_margin_neg[i]<=-0.15:
-        i4+=1
-    elif -0.25<gr_margin_neg[i]<=-0.2:
-        i5+=1
-    elif -0.3<gr_margin_neg[i]<=-0.25:
-        i6+=1
-    elif -0.35<gr_margin_neg[i]<=-0.3:
-        i7+=1
-    elif -0.4<gr_margin_neg[i]<=-0.35:
-        i8+=1
-    elif -0.45<gr_margin_neg[i]<=-0.4:
-        i9+=1
-    elif -0.5<gr_margin_neg[i]<=-0.45:
-        i10+=1
-    elif -0.55<gr_margin_neg[i]<=-0.5:
-        i11+=1
-    elif -0.5<gr_margin_neg[i]<=-0.55:
-        i12+=1
-    elif -0.65<gr_margin_neg[i]<=-0.6:
-        i13+=1
-    elif -0.7<gr_margin_neg[i]<=-0.65:
-        i14+=1
-    elif -0.75<gr_margin_neg[i]<=-0.7:
-        i15+=1
-    elif -0.8<gr_margin_neg[i]<=-0.75:
-        i16+=1
-    elif -0.85<gr_margin_neg[i]<=-0.8:
-        i17+=1
-    elif -0.9<gr_margin_neg[i]<=-0.85:
-        i18+=1
-    elif -0.95<gr_margin_neg[i]<=-0.9:
-        i19+=1
-    else:
-        i20+=1
-    i+=1
-count_gr_margin_neg = [i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14,i15,i16,i17,i18,i19,i20]
-print(count_gr_margin_neg)
+count_mg_neg = {}
+count = 0
+interval = 1
+for interval in range(0,100):
+    for j in range(0,len(gr_margin_neg)):
+        if -interval*0.01>gr_margin_neg[j]>=-(interval+1)*0.01:
+            count+=1
+    count_mg_neg[interval] = count
+    count = 0
+print(count_mg_neg)
 
 # plot the count growth margin both positive and negative
-# put the count to two dictionaries
-count_mg_pos = {}
-i=0
-for i in range(0,20,1):
-    count_mg_pos[(i+1)*5] = count_gr_margin_pos[i]
-    i+=1
-count_mg_neg = {}
-i=0
-for i in range(0,20,1):
-    count_mg_neg[(i+1)*5] = count_gr_margin_neg[i]
-    i+=1
-print(count_mg_pos)
-print(count_mg_neg)
-fig, (axs1, axs2) = plt.subplots(1, 2)
+fig, (axs1, axs2) = plt.subplots(2, 1)
 fig.suptitle('Monthly Growth Margin Distribution Histogram ('+ticker+')')
-fig.set_size_inches(18.5, 10.5)
-axs1.bar(count_mg_pos.keys(), count_mg_pos.values(), width=-5, color='g',align='edge')
+fig.set_size_inches(25, 10.5)
+axs1.bar(count_mg_pos.keys(), count_mg_pos.values(), width=1, color='g',align='edge')
 axs1.set_title('Increase')
 axs1.set(xlabel='Continuous increase margin (<=)',ylabel='Frequency')
-x_pos = np.arange(0, max(count_mg_pos.keys())+5, 5)
+x_pos = np.arange(0, max(count_mg_pos.keys())+1, 1)
 y_pos = np.arange(1, max(count_mg_pos.values())+1,1)
 axs1.set_xticks(x_pos)
 axs1.set_yticks(y_pos)
-axs2.bar(count_mg_neg.keys(), count_mg_neg.values(), width=-5, color='r',align='edge')
+axs2.bar(count_mg_neg.keys(), count_mg_neg.values(), width=1, color='r',align='edge')
 axs2.set_title('Decrease')
 axs2.set(xlabel='Continuous decrease margin (<=)',ylabel='Frequency')
-x_neg = np.arange(0, max(count_mg_neg.keys())+5, 5)
+x_neg = np.arange(0, max(count_mg_neg.keys())+1, 1)
 y_neg = np.arange(1, max(count_mg_neg.values())+1,1)
 axs2.set_xticks(x_neg)
 axs2.set_yticks(y_neg)
 plt.savefig("Monthly growth margin distribution "+ticker+'.png')
+
+#--------------------------------------------------------------------------
+# plot the distribution/histogram of the grow/decrease
+growth_rate = df_etf_monthly['growth_rate'].values.tolist()
+pos = []
+neg = []
+for i in range(0,len(growth_rate)-1):
+    if growth_rate[i] > 0:
+        pos.append(growth_rate[i])
+    else:
+        neg.append(growth_rate[i])
+
+count_grm_pos = {}
+count = 0
+interval = 1
+for interval in range(0,100):
+    for j in range(0,len(pos)):
+        if interval*0.01<pos[j]<(interval+1)*0.01:
+            count+=1
+    count_grm_pos[interval] = count
+    count = 0
+
+count_grm_neg = {}
+count = 0
+interval = 1
+for interval in range(0,100):
+    for k in range(0,len(neg)):
+        if -interval*0.01>neg[k]>-(interval+1)*0.01:
+            count+=1
+    count_grm_neg[interval] = count
+    count = 0
+
+# plot the frequency of increase and decrease
+fig, (axs1, axs2) = plt.subplots(nrows=2, ncols=1)
+fig.suptitle('Monthly Growth Histogram ('+ticker+')')
+fig.set_size_inches(25, 10.5)
+axs1.bar(count_grm_pos.keys(), count_grm_pos.values(), width=1, color='g',align='edge')
+axs1.set_title('Increase')
+axs1.set(xlabel='Increase',ylabel='Frequency')
+x_pos = np.arange(0, max(count_grm_pos.keys())+1, 1)
+y_pos = np.arange(1, max(count_grm_pos.values())+1,1)
+axs1.set_xticks(x_pos)
+axs1.set_yticks(y_pos)
+axs2.bar(count_grm_neg.keys(), count_grm_neg.values(), width=1, color='r',align='edge')
+axs2.set_title('Decrease')
+axs2.set(xlabel='Decrease',ylabel='Frequency')
+x_neg = np.arange(0, max(count_grm_neg.keys())+1, 1)
+y_neg = np.arange(1, max(count_grm_neg.values())+1,1)
+axs2.set_xticks(x_neg)
+axs2.set_yticks(y_neg)
+plt.savefig('Monthly growth histogram '+ticker+'.png')
